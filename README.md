@@ -1,29 +1,30 @@
 # Dashub Service Plans
 
-BUILD-001 is a local, financially sandboxed Service Plans quote prototype. [Product rules](docs/product-rules.md) are the authoritative specification. The app uses the existing Dashub visual system and runs independently of Project Blackbook.
+BUILD-001 is a browser-local, financially sandboxed Service Plans operating prototype. [Product rules](docs/product-rules.md) remain the authoritative specification. It runs independently of Project Blackbook and uses the existing Dashub visual system.
 
-## Run locally
+## Run
 
 ```bash
 npm install
 npm test
+npm run build
 npm run dev
 ```
 
-Open the URL printed by Next.js. `npm run build` checks the production bundle.
+Open the local URL printed by Next.js. The app stores its sandbox workspace in this browser's `localStorage` under `dashub.service-plans.build-001.v2`. A fresh browser profile seeds three dealer groups, five branches, four selectable personas, dealer and locked manufacturer templates, and representative quote, funding, claim, invoice, payout, completion and expiry scenarios. Existing v1 local quotes are copied into the new workspace on first launch.
 
-## Create Plan workflow
+## Workflow
 
-The six-step workflow captures required customer and vehicle details (VIN optional), current odometer, predicted annual kilometres, month and kilometre service intervals, plan length as number of services, manual service descriptions and GST-inclusive or exclusive prices, payment frequency and first payment date. It shows forecast service dates and odometer readings, a funded collection schedule, and a final quote summary. Weekly collections are the default; fortnightly and monthly are available.
+- Create Plan captures customer and vehicle details, current odometer, annual km, month/km intervals, service count, manually selected and GST-priced services, payment frequency and first date. It forecasts the earlier month/km due point and presents the quote and collection schedule.
+- Funding uses integer cents and checks cumulative coverage at **every** predicted service. A same-day collection is not assumed cleared; collections end before the final service. Weekly is the default, with fortnightly and monthly options.
+- An authorised user activates a dealer quote into a local contract with fixed service values, commercial terms and revision 1. The payment schedule and setup fee are snapshotted. Subscription access is checked at activation and claims.
+- Plan Detail shows customer, vehicle, contract, entitlements, predicted due points, schedule, payment events, claims, revisions and audit. Sandbox controls record payment success, failure, successful retry and capped top-ups. A failed payment leaves the plan active.
+- Claims enforce the next unclaimed entitlement, completed confirmation, RO, date, odometer and exact dealer-collected shortfall. A claim 30+ days early is flagged and logged, then immediately marked claimed with an SP PO. Dealer shortfalls reduce the remaining customer obligation.
+- Inbound dealer invoice simulation accepts one invoice per PO. A value within ±$0.05 matches; other values enter the exception queue for Dashub Admin review. Matched invoices can be grouped into the next weekly branch payout with gross, Dashub/provider fees and net remittance lines. Marking paid only updates sandbox status.
+- Finance has drilldowns for collections, future dates, failures/retries, obligations, claims, invoices, payable items, payouts, fees, refunds, forfeiture and proposed expiry review. Dashub Admin can inspect dealer groups, branches, subscriptions, module access and user permissions. Dealer templates hold service sequences and default prices; manufacturer templates remain locked.
 
-Service due dates use the earlier of the cumulative month or kilometre threshold from the quote date. The funding engine prices one regular installment as the maximum amount needed at *any* cumulative service checkpoint. It caps the last payment at the exact plan value and counts collections only when scheduled strictly before the service date, since a date-only same-day collection cannot be assumed cleared. If the chosen first date cannot fund an earlier service, the quote is rejected. Calculations use integer cents, with GST rounding per service.
+## Boundaries
 
-## Architecture and sandbox boundaries
+`lib/domain` holds quote, forecast, funding, ledger, claims, invoice, payout and finance calculations without React or persistence. `lib/application/service-plans.js` applies access rules and coordinates repository writes. `lib/adapters/manual-service-source.js` is the current service proposal source; a future service-table/PB adapter can implement the same port without introducing a PB dependency. `local-plan-repository.js` is the workspace persistence adapter. `sandbox-integrations.js` keeps payment, lookup and email ports disconnected.
 
-- `lib/domain` contains date, money, forecast, quote and funding logic without React or persistence dependencies.
-- `lib/application/service-plans.js` enforces dealer group and pricing/edit permissions when saving quotes. Manufacturer records are readable to authorised dealers but cannot be edited through the dealer workflow.
-- `lib/adapters/manual-service-source.js` is the current proposal source. A service-table or PB adapter can implement `getProposals(context)` later; Service Plans has no PB dependency. Quote records snapshot selected service names, prices and due points.
-- `lib/adapters/local-plan-repository.js` saves only to this browser's `localStorage`. First launch creates two clearly fictional example quotes, including one locked manufacturer plan.
-- `lib/adapters/sandbox-integrations.js` exposes payment, vehicle lookup and email ports that fail closed until live adapters are injected. The plan repository port can later use remote persistence. No Stripe, AutoCheck, Supabase, email or financial service is called.
-
-BUILD-001 saves **quotes only**. It does not activate contracts, collect or retry payments, process claims, calculate fees, send messages or operate the customer portal. Those flows require separate implementation and production adapters before any live use.
+All customers and transactions here are fictional. No Stripe, AutoCheck, Supabase, inbound email, banking or real payment service is connected. In particular, a sandbox “paid” or “refund” status does not move funds. Manufacturer administration, customer portal, live settlement, consent-driven plan extensions, claim reversal and vehicle transfers require subsequent work before production use.
