@@ -4,8 +4,8 @@ html,body{margin:0;height:100%;background:var(--light);color:var(--ink);font-fam
 button,input,select{font:inherit}
 button{cursor:pointer}
 button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #9bccff;outline-offset:2px}
-.shell{display:grid;grid-template-columns:252px minmax(0,1fr);height:100vh;overflow:hidden}
-.sidebar{display:flex;flex-direction:column;background:#11161b;color:#fff;padding:27px 17px 22px;min-width:0;min-height:0;overflow-y:auto}
+.shell{display:grid;grid-template-columns:252px minmax(0,1fr);grid-template-rows:minmax(0,1fr);height:100vh;height:100dvh;overflow:hidden}
+.sidebar{display:flex;flex-direction:column;background:#11161b;color:#fff;padding:27px 17px 22px;min-width:0;min-height:0;height:100%;overflow-y:auto}
 .brand{display:flex;align-items:center;gap:12px;font-size:22px;font-weight:800;letter-spacing:-.04em;padding:0 11px;margin-bottom:43px}
 .brandIcon{display:grid;place-items:center;width:37px;height:37px;border-radius:10px;background:var(--blue);font-size:22px;font-weight:900;color:#fff;letter-spacing:0}
 .brand small{display:block;color:#9faab5;font-size:12px;font-weight:600;letter-spacing:0;margin-top:2px}
@@ -18,15 +18,17 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
 .sidebarBottom{margin-top:auto;border-top:1px solid #2c333a;padding:20px 11px 0;font-size:10px;font-weight:800;letter-spacing:.1em;color:#a9d3fa}
 .sidebarBottom small{display:block;margin:7px 0 0 15px;font-size:11px;font-weight:400;letter-spacing:0;color:#87929d}
 .statusDot{display:inline-block;width:7px;height:7px;border-radius:100%;background:#46cb89;margin-right:6px}
-.content{width:100%;min-width:0;max-width:1660px;padding:0 38px 50px;margin:auto;align-self:stretch;min-height:0;overflow-y:auto}
-.topbar{height:70px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;color:var(--slate);font-size:12px;margin-bottom:35px}
+.content{width:100%;min-width:0;min-height:0;height:100%;padding:0 32px 40px;overflow-x:hidden;overflow-y:auto;scrollbar-gutter:stable}
+.topbar{min-height:48px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px;color:var(--slate);font-size:11px;margin-bottom:14px}
+.topbar>span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .topbar b{color:#b2bdc8;margin:0 9px}
 .userBadge{display:grid;place-items:center;border-radius:50%;width:30px;height:30px;background:#e3efff;color:#1677d5;font-weight:800;font-size:11px}
-.pageHeader{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;margin-bottom:26px}
-.pageHeader h1{font-size:34px;letter-spacing:-.035em;margin:0 0 7px;line-height:1.15}
-.pageHeader .sub{max-width:650px}
-.eyebrow{display:block;color:var(--blue-dark);font-weight:800;font-size:11px;letter-spacing:.105em;margin:0 0 9px;text-transform:uppercase}
-.sub{color:var(--slate);font-size:13px;line-height:1.55;margin:0}
+.pageHeader{display:flex;align-items:center;justify-content:space-between;gap:12px 18px;margin-bottom:14px;min-width:0}
+.pageHeader>div:first-child{min-width:0}
+.pageHeader h1{font-size:26px;letter-spacing:-.03em;margin:0 0 3px;line-height:1.15}
+.pageHeader .sub{max-width:760px}
+.eyebrow{display:block;color:var(--blue-dark);font-weight:800;font-size:10px;letter-spacing:.1em;margin:0 0 4px;text-transform:uppercase}
+.sub{color:var(--slate);font-size:12px;line-height:1.45;margin:0}
 .primaryButton,.secondaryButton{display:inline-flex;align-items:center;justify-content:center;border-radius:8px;padding:11px 17px;font-size:13px;font-weight:750;white-space:nowrap;min-height:42px}
 .primaryButton{border:1px solid var(--blue);background:var(--blue);color:#fff;box-shadow:0 3px 9px #168bff2b}
 .primaryButton:hover{background:var(--blue-dark)}
@@ -46,8 +48,8 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
 .mainGrid{display:grid;grid-template-columns:minmax(0,1.85fr) minmax(280px,1fr);gap:15px;align-items:start}
 .textButton,.backButton{border:0;background:none;color:var(--blue-dark);padding:2px 0;font-size:12px;font-weight:750;white-space:nowrap}
 .textButton:hover,.backButton:hover{text-decoration:underline}
-.planList{display:grid}
-.planRow{display:flex;align-items:center;gap:13px;width:100%;border:0;border-top:1px solid var(--border);padding:15px 2px;text-align:left;background:transparent;color:var(--ink)}
+.planList{display:grid;grid-template-columns:minmax(0,1fr)}
+.planRow{display:flex;align-items:center;gap:13px;width:100%;min-width:0;border:0;border-top:1px solid var(--border);padding:15px 2px;text-align:left;background:transparent;color:var(--ink)}
 .planRow:hover{background:#f8fbff}
 .planIcon{display:grid;place-items:center;width:34px;height:34px;border-radius:9px;flex:none;font-size:12px;font-weight:800}
 .planIcon.dealer{background:#e7f3ff;color:#167fe3}
@@ -66,7 +68,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
 .guidanceRule{display:flex;gap:13px;border-top:1px solid var(--border);padding:13px 0;font-size:12px;font-weight:650}
 .guidanceRule b{color:var(--blue);font-size:11px}
 .guidance .secondaryButton{margin-top:15px}
-.backRow{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+.backRow{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
 .pill{display:inline-flex;align-items:center;border-radius:99px;background:#edf5fd;color:#126ec0;border:1px solid #d7e9fa;padding:5px 10px;font-size:11px;font-weight:750;white-space:nowrap}
 .pill.positive{background:var(--green-light);color:var(--green);border-color:#ccebd9}
 .notice,.errorBox,.helpBox,.sandboxNote{border-radius:8px;padding:12px 14px;font-size:12px;line-height:1.5}
@@ -94,11 +96,11 @@ tr:last-child td{border-bottom:0}
 td strong{font-size:12px}
 td small{display:block;color:var(--slate);margin-top:4px}
 .positiveText{color:var(--green);font-weight:750}
-.scheduleScroll{max-height:320px;overflow:auto}
+.scheduleScroll{overflow-x:auto}
 .scheduleScroll table{max-width:580px}
 .scheduleOmitted{color:var(--slate);font-size:11px;margin:9px 0}
 .workflowLayout{display:grid;grid-template-columns:210px minmax(0,1fr);gap:24px;align-items:start}
-.formHeader{margin-bottom:20px}
+.formHeader{margin-bottom:14px}
 .stepNav{display:grid;gap:5px;position:sticky;top:20px}
 .stepNavItem{display:flex;align-items:center;gap:11px;width:100%;padding:10px;border:0;border-radius:8px;background:transparent;color:#71808e;font-size:12px;font-weight:700;text-align:left}
 .stepNavItem span{display:grid;place-items:center;flex:none;width:27px;height:27px;border-radius:50%;border:1px solid #d2dce5;background:#fff;color:#667482;font-size:11px}
@@ -161,11 +163,10 @@ td small{display:block;color:var(--slate);margin-top:4px}
 .simpleRecords{display:grid;gap:8px;margin-top:12px}
 .simpleRecords>div{display:grid;gap:4px;border-top:1px solid var(--border);padding:10px 0;font-size:12px}
 .simpleRecords span{color:var(--slate);line-height:1.4}
-.auditScroll{max-height:260px;overflow:auto}
-.auditScroll:has(details[open]){max-height:540px}
-.auditSnapshot{max-height:300px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;font-size:10px;background:#f4f6f8;border:1px solid var(--border);border-radius:6px;padding:10px}
+.auditScroll{overflow:visible}
+.auditSnapshot{overflow-x:auto;white-space:pre-wrap;overflow-wrap:anywhere;font-size:10px;background:#f4f6f8;border:1px solid var(--border);border-radius:6px;padding:10px}
 .queueGrid{display:grid;grid-template-columns:minmax(270px,1fr) minmax(0,2fr);gap:15px;align-items:start}
-.queueList{display:grid;max-height:630px;overflow-y:auto}
+.queueList{display:grid}
 .queueItem{display:grid;gap:5px;text-align:left;background:#fff;border:0;border-top:1px solid var(--border);padding:13px 9px;color:var(--ink)}
 .queueItem:hover,.queueItem.selected{background:#edf6ff}
 .queueItem.selected{box-shadow:inset 3px 0 var(--blue)}
@@ -189,6 +190,6 @@ td small{display:block;color:var(--slate);margin-top:4px}
 .adminStats{grid-template-columns:repeat(2,minmax(0,1fr))}
 .adminStats button{text-align:left;cursor:pointer}
 .adminStats button:hover{border-color:#8abef1}
-@media(max-width:1150px){.metricGrid,.financeGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.mainGrid,.queueGrid{grid-template-columns:1fr}.planType{display:none}}
-@media(max-width:800px){.shell{grid-template-columns:1fr;grid-template-rows:auto minmax(0,1fr)}.sidebar{padding:12px 16px;display:block;overflow:visible}.brand{margin:0 0 13px;padding:0;font-size:18px}.brandIcon{width:31px;height:31px}.sidebar nav{display:flex;overflow:auto}.navItem{width:auto;white-space:nowrap}.sideLabel,.sidebarBottom{display:none}.content{padding:0 20px 40px}.topbar{height:51px;margin-bottom:24px}.workflowLayout{grid-template-columns:1fr;gap:12px}.stepNav{display:flex;overflow:auto;position:static}.stepNavItem{width:auto;white-space:nowrap}.stepNavItem span{width:23px;height:23px}}
-@media(max-width:600px){.pageHeader{display:block}.pageHeader h1{font-size:29px}.pageHeader .primaryButton{margin-top:17px;width:100%}.metricGrid,.summaryMetrics,.fieldGrid,.fundingPreview,.financeGrid,.operationalGrid,.adminStats{grid-template-columns:1fr}.fieldWide{grid-column:auto}.formPanel{padding:19px}.summaryHero{display:block;padding:21px}.summaryTotal{text-align:left;margin-top:20px}.planValue{margin-left:0}.planRow{gap:8px}.planIcon{width:29px;height:29px}.serviceCardTop{display:block}.dueBadge{display:block;margin-top:10px}.formActions button{flex:1}.topbar{font-size:10px}.personaSelect{font-size:0}.templateService{grid-template-columns:1fr 1fr}.planRow .pill{display:none}}
+@media(max-width:1150px){.metricGrid,.financeGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.mainGrid,.queueGrid{grid-template-columns:minmax(0,1fr)}.planType{display:none}}
+@media(max-width:800px){.shell{grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr)}.sidebar{height:auto;padding:10px 16px;display:block;overflow:visible}.brand{margin:0 0 8px;padding:0;font-size:18px}.brandIcon{width:31px;height:31px}.sidebar nav{display:flex;overflow-x:auto;overflow-y:hidden}.navItem{width:auto;white-space:nowrap}.sideLabel,.sidebarBottom{display:none}.content{padding:0 20px 32px}.topbar{min-height:44px;margin-bottom:12px}.workflowLayout{grid-template-columns:1fr;gap:12px}.stepNav{display:flex;overflow-x:auto;overflow-y:hidden;position:static}.stepNavItem{width:auto;white-space:nowrap}.stepNavItem span{width:23px;height:23px}}
+@media(max-width:600px){.pageHeader{align-items:flex-start;flex-wrap:wrap}.pageHeader h1{font-size:23px}.pageHeader .primaryButton{margin-top:2px}.metricGrid,.summaryMetrics,.fieldGrid,.fundingPreview,.financeGrid,.operationalGrid,.adminStats{grid-template-columns:1fr}.fieldWide{grid-column:auto}.formPanel{padding:19px}.summaryHero{display:block;padding:21px}.summaryTotal{text-align:left;margin-top:20px}.planValue{margin-left:0}.planRow{gap:8px}.planIcon{width:29px;height:29px}.serviceCardTop{display:block}.dueBadge{display:block;margin-top:10px}.formActions button{flex:1}.topbar{font-size:10px}.personaSelect{font-size:0}.templateService{grid-template-columns:1fr 1fr}.planRow .pill{display:none}}
