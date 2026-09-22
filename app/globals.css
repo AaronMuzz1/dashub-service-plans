@@ -155,12 +155,15 @@ td small{display:block;color:var(--slate);margin-top:4px}
 .inlineForm{display:flex;align-items:end;gap:10px;flex-wrap:wrap;margin:17px 0}
 .inlineForm label{display:grid;gap:6px;font-size:12px;font-weight:700;color:#354453}
 .inlineForm input{height:40px;border:1px solid #cad4de;border-radius:7px;padding:8px 10px;min-width:150px}
+.inlineForm select{height:40px;border:1px solid #cad4de;border-radius:7px;padding:8px 10px;background:#fff;min-width:220px;max-width:100%}
 .inlineForm small{font-size:11px;color:var(--slate)}
 .sectionToggle{margin-top:14px}
 .simpleRecords{display:grid;gap:8px;margin-top:12px}
 .simpleRecords>div{display:grid;gap:4px;border-top:1px solid var(--border);padding:10px 0;font-size:12px}
 .simpleRecords span{color:var(--slate);line-height:1.4}
 .auditScroll{max-height:260px;overflow:auto}
+.auditScroll:has(details[open]){max-height:540px}
+.auditSnapshot{max-height:300px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;font-size:10px;background:#f4f6f8;border:1px solid var(--border);border-radius:6px;padding:10px}
 .queueGrid{display:grid;grid-template-columns:minmax(270px,1fr) minmax(0,2fr);gap:15px;align-items:start}
 .queueList{display:grid;max-height:630px;overflow-y:auto}
 .queueItem{display:grid;gap:5px;text-align:left;background:#fff;border:0;border-top:1px solid var(--border);padding:13px 9px;color:var(--ink)}

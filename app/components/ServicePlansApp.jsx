@@ -10,6 +10,7 @@ import { canCreateDealerPlan, isDashubAdmin } from "../../lib/domain/permissions
 import { getPlanFinancials } from "../../lib/domain/operations.js";
 import PlanForm, { newDraft } from "./PlanForm.jsx";
 import PlanDetail from "./PlanDetail.jsx";
+import { PayoutAdjustmentRegister } from "./ClaimReversals.jsx";
 import { ClaimsArea, InvoicesArea, PayoutsArea } from "./WorkQueues.jsx";
 import { AdminArea, FinanceArea, TemplatesArea } from "./ManagementAreas.jsx";
 import { Metric } from "./QuoteSummary.jsx";
@@ -101,7 +102,7 @@ export default function ServicePlansApp() {
         {view === "form" && <PlanForm key={formSession} initialDraft={editingPlan?.draft ?? templateDraft} editing={Boolean(editingId)} onCancel={() => navigate("plans")} onSave={savePlan} />}
         {view === "claims" && <ClaimsArea key={claimSession} plans={plans} workspace={workspace} actor={actor} service={service} onAction={action} onOpenPlan={openPlan} initialPlanId={selectedId} />}
         {view === "invoices" && <InvoicesArea plans={plans} actor={actor} service={service} onAction={action} onOpenPlan={openPlan} />}
-        {view === "payouts" && <PayoutsArea plans={plans} payouts={service.payouts(actor)} workspace={workspace} actor={actor} service={service} onAction={action} onOpenPlan={openPlan} />}
+        {view === "payouts" && <><PayoutsArea plans={plans} payouts={service.payouts(actor)} workspace={workspace} actor={actor} service={service} onAction={action} onOpenPlan={openPlan} /><PayoutAdjustmentRegister adjustments={service.adjustments(actor)} payouts={service.payouts(actor)} onOpenPlan={openPlan} /></>}
         {view === "finance" && <FinanceArea actor={actor} service={service} onOpenPlan={openPlan} />}
         {view === "templates" && <TemplatesArea templates={service.templates(actor)} workspace={workspace} actor={actor} service={service} onAction={action} onUseTemplate={startCreate} />}
         {view === "admin" && <AdminArea workspace={workspace} actor={actor} service={service} onAction={action} onOpenFinance={() => navigate("finance")} onOpenPlans={() => navigate("plans")} />}
