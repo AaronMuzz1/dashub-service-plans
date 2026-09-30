@@ -5,9 +5,9 @@ import { formatMoney } from "../../lib/domain/money.js";
 import { canManageTemplate, isDashubAdmin } from "../../lib/domain/permissions.js";
 import { displayDate } from "./QuoteSummary.jsx";
 
-export function FinanceArea({ service, actor, onOpenPlan }) {
+export function FinanceArea({ service, actor, onOpenPlan, initialKey = "collected" }) {
   const metrics = service.finance(actor, new Date().toISOString().slice(0, 10));
-  const [selectedKey, setSelectedKey] = useState("collected");
+  const [selectedKey, setSelectedKey] = useState(initialKey);
   const selected = metrics.find((item) => item.key === selectedKey) ?? metrics[0];
   return <><header className="pageHeader"><div><p className="eyebrow">DASHUB FINANCIAL CONTROL</p><h1>Finance</h1><p className="sub">Every figure opens its underlying local records. Amounts are sandbox observations, not bank balances.</p></div></header><div className="financeGrid">{metrics.map((item) => <button key={item.key} className={`financeMetric${selected.key === item.key ? " active" : ""}`} onClick={() => setSelectedKey(item.key)}><span>{item.label}</span><strong>{item.unit === "money" ? formatMoney(item.value) : item.value}</strong><small>{item.records.length} record{item.records.length === 1 ? "" : "s"} →</small></button>)}</div><section className="panel sectionGap"><div className="panelHeading"><div><h2>{selected.label}</h2><p className="sub">{selected.records.length} underlying record{selected.records.length === 1 ? "" : "s"}</p></div></div>{selected.key === "forfeited" && <p className="helpBox">Forfeiture remains proposed and subject to legal review. No automatic forfeiture runs in this sandbox.</p>}<div className="tableScroll"><table><thead><tr><th>Plan / record</th><th>Customer / branch</th><th>Dealer group</th><th>Date</th><th>Detail</th><th>Amount</th></tr></thead><tbody>{selected.records.length ? selected.records.map((row, index) => <tr key={`${row.planId}-${row.date}-${index}`}><td><button className="textButton" onClick={() => row.planId && onOpenPlan(row.planId)}>{row.planId ?? "—"}</button></td><td>{row.customer}</td><td>{row.dealerGroupId}</td><td>{row.date ? displayDate(row.date) : "—"}</td><td>{row.detail}</td><td>{formatMoney(row.amountCents)}</td></tr>) : <tr><td colSpan="6">No records in this category.</td></tr>}</tbody></table></div></section></>;
 }

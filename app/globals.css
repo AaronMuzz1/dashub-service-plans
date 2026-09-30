@@ -134,9 +134,58 @@ td small{display:block;color:var(--slate);margin-top:4px}
 .serviceNumber{display:grid;place-items:center;width:27px;height:27px;background:#e3f1ff;color:#1477cf;border-radius:7px;font-size:10px;font-weight:800}
 .dueBadge{color:#596d7e;font-size:11px;white-space:nowrap}
 .grossHint{display:block;color:#52728c;font-size:11px;margin-top:13px}
-.personaSelect{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:700;white-space:nowrap}
-.personaSelect select{border:1px solid var(--border);border-radius:7px;background:#fff;padding:7px;color:var(--ink);max-width:180px}
+.personaSelect{display:flex;align-items:center;gap:7px;font-size:10px;font-weight:600;white-space:nowrap;color:#8994a0;opacity:.78}
+.personaSelect select{border:1px solid #dbe1e6;border-radius:7px;background:#f7f8f9;padding:6px 8px;color:#66727e;max-width:170px;font-size:10px}
 .globalError{margin:0 0 18px}
+.dashboardHeader{margin-bottom:10px}
+.dashboardActions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:15px}
+.dashboardAction{display:flex;align-items:center;gap:14px;min-width:0;min-height:78px;padding:15px 17px;border:1px solid #bcdcff;border-radius:11px;background:#fff;color:var(--ink);text-align:left;box-shadow:0 2px 4px #1d2a3610}
+.dashboardAction:hover{border-color:#69aff1;background:#f5faff}
+.dashboardActionIcon{display:grid;place-items:center;flex:none;width:42px;height:42px;border-radius:10px;background:var(--blue);color:#fff;font-size:24px;font-weight:500}
+.dashboardAction>span:nth-child(2){display:grid;gap:4px;min-width:0;flex:1}
+.dashboardAction strong{font-size:15px;letter-spacing:.01em;text-transform:uppercase}
+.dashboardAction small{color:var(--slate);font-size:11px;line-height:1.35}
+.dashboardAction i,.dashboardMetric i{color:var(--blue-dark);font-style:normal;font-size:18px}
+.dashboardMetricSections{display:grid;gap:13px}
+.dashboardMetricSection{min-width:0}
+.dashboardMetricSection>h2{margin:0 0 7px;color:#596775;font-size:11px;font-weight:800;letter-spacing:.075em;text-transform:uppercase}
+.dashboardMetricGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:11px}
+.dashboardMetric{position:relative;display:grid;align-content:start;gap:5px;min-width:0;min-height:91px;padding:14px 16px;border:1px solid var(--border);border-radius:10px;background:#fff;color:var(--ink);text-align:left;box-shadow:0 2px 4px #1d2a3610}
+button.dashboardMetric:hover{border-color:#8abef1;background:#f7fbff}
+.dashboardMetric span,.dashboardMetric small{color:var(--slate)}
+.dashboardMetric span{padding-right:18px;font-size:11px;font-weight:700;line-height:1.25}
+.dashboardMetric strong{font-size:22px;line-height:1.1;letter-spacing:-.025em;overflow-wrap:anywhere}
+.dashboardMetric small{font-size:10px;line-height:1.3}
+.dashboardMetric i{position:absolute;top:12px;right:13px;font-size:14px}
+.dashboardMainGrid{display:grid;grid-template-columns:minmax(275px,.8fr) minmax(0,1.7fr);gap:14px;align-items:start;margin-top:15px}
+.attentionPanel,.recentPlansPanel{min-width:0}
+.attentionPanel .panelHeading,.recentPlansPanel .panelHeading{margin-bottom:10px}
+.attentionList{display:grid}
+.attentionItem{display:flex;align-items:center;gap:10px;width:100%;min-width:0;padding:12px 2px;border:0;border-top:1px solid var(--border);background:transparent;color:var(--ink);text-align:left}
+.attentionItem:hover{background:#f8fbff}
+.attentionMarker{width:8px;height:8px;flex:none;border-radius:50%;background:#5b9edb}
+.attentionItem.warning .attentionMarker{background:#e2a01d}
+.attentionItem.danger .attentionMarker{background:#c94e44}
+.attentionBody{display:grid;gap:4px;min-width:0;flex:1}
+.attentionBody strong{font-size:12px;line-height:1.3}
+.attentionBody small{color:var(--slate);font-size:10px;line-height:1.4;overflow-wrap:anywhere}
+.attentionCount{display:grid;place-items:center;flex:none;min-width:24px;height:24px;padding:0 6px;border-radius:12px;background:#eef4fa;color:#31597d;font-size:11px;font-weight:800}
+.attentionEmpty{display:flex;align-items:center;gap:11px;border-top:1px solid var(--border);padding:15px 2px;color:#315d48}
+.attentionEmpty>span{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--green-light);font-weight:800}
+.attentionEmpty div{display:grid;gap:3px}
+.attentionEmpty strong{font-size:12px}
+.attentionEmpty small{color:var(--slate);font-size:10px}
+.dashboardPlanList{display:grid;grid-template-columns:minmax(0,1fr)}
+.dashboardPlanRow{display:flex;align-items:center;gap:11px;width:100%;min-width:0;padding:12px 2px;border:0;border-top:1px solid var(--border);background:transparent;color:var(--ink);text-align:left}
+.dashboardPlanRow:hover{background:#f8fbff}
+.dashboardPlanMain{display:grid;gap:3px;min-width:0;flex:1}
+.dashboardPlanMain>strong,.dashboardPlanMain>span,.dashboardPlanMain>small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dashboardPlanMain>strong{font-size:13px}
+.dashboardPlanMain>span{font-size:11px;font-weight:650;color:#344454}
+.dashboardPlanMain>small{font-size:10px;color:var(--slate)}
+.dashboardPlanMain small b{color:#47627a;text-transform:capitalize}
+.dashboardPlanValue{font-size:12px;white-space:nowrap}
+.dashboardFilterNotice{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:-3px 0 15px;padding:10px 12px;border-radius:8px;background:#edf6ff;color:#315d80;font-size:11px}
 .registerFilters{display:flex;align-items:end;gap:18px;flex-wrap:wrap;margin-bottom:14px}
 .registerFilters .field{min-width:250px;flex:1}
 .filterRow{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin:0 0 17px}
@@ -190,6 +239,6 @@ td small{display:block;color:var(--slate);margin-top:4px}
 .adminStats{grid-template-columns:repeat(2,minmax(0,1fr))}
 .adminStats button{text-align:left;cursor:pointer}
 .adminStats button:hover{border-color:#8abef1}
-@media(max-width:1150px){.metricGrid,.financeGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.mainGrid,.queueGrid{grid-template-columns:minmax(0,1fr)}.planType{display:none}}
+@media(max-width:1150px){.metricGrid,.financeGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.mainGrid,.queueGrid,.dashboardMainGrid{grid-template-columns:minmax(0,1fr)}.planType{display:none}}
 @media(max-width:800px){.shell{grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr)}.sidebar{height:auto;padding:10px 16px;display:block;overflow:visible}.brand{margin:0 0 8px;padding:0;font-size:18px}.brandIcon{width:31px;height:31px}.sidebar nav{display:flex;overflow-x:auto;overflow-y:hidden}.navItem{width:auto;white-space:nowrap}.sideLabel,.sidebarBottom{display:none}.content{padding:0 20px 32px}.topbar{min-height:44px;margin-bottom:12px}.workflowLayout{grid-template-columns:1fr;gap:12px}.stepNav{display:flex;overflow-x:auto;overflow-y:hidden;position:static}.stepNavItem{width:auto;white-space:nowrap}.stepNavItem span{width:23px;height:23px}}
-@media(max-width:600px){.pageHeader{align-items:flex-start;flex-wrap:wrap}.pageHeader h1{font-size:23px}.pageHeader .primaryButton{margin-top:2px}.metricGrid,.summaryMetrics,.fieldGrid,.fundingPreview,.financeGrid,.operationalGrid,.adminStats{grid-template-columns:1fr}.fieldWide{grid-column:auto}.formPanel{padding:19px}.summaryHero{display:block;padding:21px}.summaryTotal{text-align:left;margin-top:20px}.planValue{margin-left:0}.planRow{gap:8px}.planIcon{width:29px;height:29px}.serviceCardTop{display:block}.dueBadge{display:block;margin-top:10px}.formActions button{flex:1}.topbar{font-size:10px}.personaSelect{font-size:0}.templateService{grid-template-columns:1fr 1fr}.planRow .pill{display:none}}
+@media(max-width:600px){.pageHeader{align-items:flex-start;flex-wrap:wrap}.pageHeader h1{font-size:23px}.pageHeader .primaryButton{margin-top:2px}.metricGrid,.summaryMetrics,.fieldGrid,.fundingPreview,.financeGrid,.operationalGrid,.adminStats,.dashboardActions,.dashboardMetricGrid{grid-template-columns:1fr}.fieldWide{grid-column:auto}.formPanel{padding:19px}.summaryHero{display:block;padding:21px}.summaryTotal{text-align:left;margin-top:20px}.planValue{margin-left:0}.planRow{gap:8px}.planIcon{width:29px;height:29px}.serviceCardTop{display:block}.dueBadge{display:block;margin-top:10px}.formActions button{flex:1}.topbar{font-size:10px}.personaSelect{font-size:0}.templateService{grid-template-columns:1fr 1fr}.planRow .pill{display:none}.dashboardAction{min-height:70px}.dashboardMetric{min-height:82px}.dashboardPlanMain>small{display:none}.dashboardPlanValue{display:none}.dashboardFilterNotice{align-items:flex-start;flex-direction:column}}
