@@ -29,7 +29,7 @@ test("unequal early service drives the installment above whole-term averaging", 
 });
 
 test("higher annual mileage moves service dates and raises required funding", () => {
-  const forecastInput = { startDate: "2026-01-01", currentOdometer: 40000, intervalMonths: 12, intervalKm: 15000, numberOfServices: 2 };
+  const forecastInput = { startDate: "2026-01-01", lastCompletedService: { date: "2026-01-01", odometer: 40000 }, currentOdometer: 40000, intervalMonths: 12, intervalKm: 15000, numberOfServices: 2 };
   const normal = forecastServices({ ...forecastInput, annualKm: 12000 });
   const high = forecastServices({ ...forecastInput, annualKm: 60000 });
   assert.equal(normal[0].trigger, "months");
@@ -45,7 +45,7 @@ test("higher annual mileage moves service dates and raises required funding", ()
 });
 
 test("current odometer is required for a forecast", () => {
-  assert.throws(() => forecastServices({ startDate: "2026-01-01", currentOdometer: "", annualKm: 15000, intervalMonths: 12, intervalKm: 15000, numberOfServices: 2 }), /odometer is required/);
+  assert.throws(() => forecastServices({ startDate: "2026-01-01", lastCompletedService: { date: "2026-01-01", odometer: 0 }, currentOdometer: "", annualKm: 15000, intervalMonths: 12, intervalKm: 15000, numberOfServices: 2 }), /odometer is required/);
 });
 
 for (const frequency of ["weekly", "fortnightly", "monthly"]) {
@@ -93,6 +93,7 @@ test("quote snapshots GST-inclusive service values and keeps VIN optional", () =
     quoteDate: "2026-01-01",
     customer: { firstName: "A", lastName: "B", mobile: "021 123 4567", email: "a@example.test", address: "1 Test Street" },
     vehicle: { year: "2024", make: "Toyota", model: "Corolla", registration: "ABC123", vin: "" },
+    lastCompletedService: { date: "2026-01-01", odometer: "0", serviceTablePosition: null },
     currentOdometer: "1000", annualKm: "12000", intervalMonths: "12", intervalKm: "15000", numberOfServices: "2",
     services: [{ name: "First", price: "100.00", taxMode: "exclusive" }, { name: "Second", price: "200.00", taxMode: "inclusive" }],
     frequency: "weekly", firstPaymentDate: "2026-01-08",

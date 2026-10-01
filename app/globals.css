@@ -113,6 +113,10 @@ td small{display:block;color:var(--slate);margin-top:4px}
 .formIntro{margin-bottom:24px;padding-bottom:18px;border-bottom:1px solid var(--border)}
 .formIntro h2{font-size:23px;margin:0 0 7px;letter-spacing:-.025em}
 .formIntro .sub{max-width:650px}
+.formSection{margin-top:22px;padding:0;border:0}
+.formSection+.formSection{padding-top:22px;border-top:1px solid var(--border)}
+.formSectionHeading{display:flex;align-items:start;justify-content:space-between;gap:16px;margin-bottom:14px}
+.formSectionHeading h3{margin:0 0 4px;font-size:14px}
 .fieldGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:19px}
 .field{display:flex;flex-direction:column;gap:7px;font-size:12px;font-weight:700;color:#354453;min-width:0}
 .fieldWide{grid-column:1/-1}
@@ -122,6 +126,19 @@ td small{display:block;color:var(--slate);margin-top:4px}
 .formActions{display:flex;justify-content:space-between;gap:12px;margin-top:31px;padding-top:21px;border-top:1px solid var(--border)}
 .forecastStrip,.fundingPreview{display:grid;gap:8px;border-radius:9px;background:#edf6ff;border:1px solid #d8eafb;margin-top:24px;padding:15px 18px;color:#245279;font-size:12px}
 .forecastStrip strong{color:#156fbe}
+.forecastPreview{margin-top:24px;border:1px solid #d8eafb;border-radius:9px;background:#f7fbff;overflow:hidden}
+.forecastPreviewHeading{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 16px;background:#edf6ff;color:#245279}
+.forecastPreviewHeading>div{display:flex;align-items:center;gap:9px}
+.forecastPreviewHeading strong{color:#156fbe;font-size:13px}
+.forecastPreviewHeading span,.forecastPreviewHeading small{font-size:11px;color:#5e7b93}
+.forecastList{display:grid;padding:0 16px}
+.forecastRow{display:grid;grid-template-columns:auto minmax(130px,.8fr) minmax(180px,1.2fr) auto;align-items:center;gap:12px;padding:13px 0;border-top:1px solid #dfeaf4;color:#263c50;font-size:12px}
+.forecastRow:first-child{border-top:0}
+.forecastRow>div{display:grid;gap:4px}
+.forecastRow small{color:var(--slate);font-size:11px}
+.forecastState{justify-self:end;border-radius:99px;padding:4px 8px;background:#e8f5ed;color:#22724a;font-size:10px;font-weight:800;text-transform:uppercase;white-space:nowrap}
+.forecastState.due_now{background:#fff1d8;color:#956000}
+.forecastState.overdue{background:#fff0ef;color:#a53028}
 .fundingPreview{grid-template-columns:1fr 1fr;gap:20px}
 .fundingPreview span,.fundingPreview strong,.fundingPreview small{display:block}
 .fundingPreview span{color:#4e6b83}
@@ -241,4 +258,4 @@ button.dashboardMetric:hover{border-color:#8abef1;background:#f7fbff}
 .adminStats button:hover{border-color:#8abef1}
 @media(max-width:1150px){.metricGrid,.financeGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.mainGrid,.queueGrid,.dashboardMainGrid{grid-template-columns:minmax(0,1fr)}.planType{display:none}}
 @media(max-width:800px){.shell{grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr)}.sidebar{height:auto;padding:10px 16px;display:block;overflow:visible}.brand{margin:0 0 8px;padding:0;font-size:18px}.brandIcon{width:31px;height:31px}.sidebar nav{display:flex;overflow-x:auto;overflow-y:hidden}.navItem{width:auto;white-space:nowrap}.sideLabel,.sidebarBottom{display:none}.content{padding:0 20px 32px}.topbar{min-height:44px;margin-bottom:12px}.workflowLayout{grid-template-columns:1fr;gap:12px}.stepNav{display:flex;overflow-x:auto;overflow-y:hidden;position:static}.stepNavItem{width:auto;white-space:nowrap}.stepNavItem span{width:23px;height:23px}}
-@media(max-width:600px){.pageHeader{align-items:flex-start;flex-wrap:wrap}.pageHeader h1{font-size:23px}.pageHeader .primaryButton{margin-top:2px}.metricGrid,.summaryMetrics,.fieldGrid,.fundingPreview,.financeGrid,.operationalGrid,.adminStats,.dashboardActions,.dashboardMetricGrid{grid-template-columns:1fr}.fieldWide{grid-column:auto}.formPanel{padding:19px}.summaryHero{display:block;padding:21px}.summaryTotal{text-align:left;margin-top:20px}.planValue{margin-left:0}.planRow{gap:8px}.planIcon{width:29px;height:29px}.serviceCardTop{display:block}.dueBadge{display:block;margin-top:10px}.formActions button{flex:1}.topbar{font-size:10px}.personaSelect{font-size:0}.templateService{grid-template-columns:1fr 1fr}.planRow .pill{display:none}.dashboardAction{min-height:70px}.dashboardMetric{min-height:82px}.dashboardPlanMain>small{display:none}.dashboardPlanValue{display:none}.dashboardFilterNotice{align-items:flex-start;flex-direction:column}}
+@media(max-width:600px){.pageHeader{align-items:flex-start;flex-wrap:wrap}.pageHeader h1{font-size:23px}.pageHeader .primaryButton{margin-top:2px}.metricGrid,.summaryMetrics,.fieldGrid,.fundingPreview,.financeGrid,.operationalGrid,.adminStats,.dashboardActions,.dashboardMetricGrid{grid-template-columns:1fr}.fieldWide{grid-column:auto}.formPanel{padding:19px}.summaryHero{display:block;padding:21px}.summaryTotal{text-align:left;margin-top:20px}.planValue{margin-left:0}.planRow{gap:8px}.planIcon{width:29px;height:29px}.serviceCardTop{display:block}.dueBadge{display:block;margin-top:10px}.formActions button{flex:1}.topbar{font-size:10px}.personaSelect{font-size:0}.templateService{grid-template-columns:1fr 1fr}.planRow .pill{display:none}.dashboardAction{min-height:70px}.dashboardMetric{min-height:82px}.dashboardPlanMain>small{display:none}.dashboardPlanValue{display:none}.dashboardFilterNotice,.forecastPreviewHeading{align-items:flex-start;flex-direction:column}.forecastRow{grid-template-columns:auto minmax(0,1fr) auto}.forecastRow>div:nth-of-type(2){grid-column:2/-1}.forecastState{grid-column:3;grid-row:1}.forecastPreviewHeading>div{flex-wrap:wrap}}

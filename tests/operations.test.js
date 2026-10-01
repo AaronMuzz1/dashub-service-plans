@@ -10,6 +10,7 @@ function quotePlan(id = "plan", branchId = "branch") {
   const draft = {
     quoteDate: "2026-01-01", customer: { firstName: "Test", lastName: "Customer", mobile: "021 123 4567", email: "test@example.test", address: "1 Test Road" },
     vehicle: { year: "2022", make: "Toyota", model: "RAV4", registration: "TEST01", vin: "" },
+    lastCompletedService: { date: "2026-01-01", odometer: "30000", serviceTablePosition: null },
     currentOdometer: "40000", annualKm: "12000", intervalMonths: "6", intervalKm: "15000", numberOfServices: "2",
     frequency: "monthly", firstPaymentDate: "2026-01-05",
     services: [{ name: "First", price: "500.00", taxMode: "inclusive" }, { name: "Second", price: "900.00", taxMode: "inclusive" }],

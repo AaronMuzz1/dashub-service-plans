@@ -18,10 +18,35 @@ export function newDraft() {
     quoteDate,
     customer: { firstName: "", lastName: "", mobile: "", email: "", address: "" },
     vehicle: { year: "", make: "", model: "", registration: "", vin: "" },
+    lastCompletedService: { date: "", odometer: "", serviceTablePosition: null },
     currentOdometer: "", annualKm: "15000", intervalMonths: "12", intervalKm: "15000",
     numberOfServices: "3", services: [1, 2, 3].map(blankManualService),
     frequency: "weekly", firstPaymentDate: addDays(quoteDate, 7),
   };
+}
+
+function normaliseDraft(source) {
+  const draft = JSON.parse(JSON.stringify(source));
+  if (!draft.lastCompletedService) {
+    draft.lastCompletedService = {
+      date: draft.quoteDate ?? "",
+      odometer: String(draft.currentOdometer ?? ""),
+      serviceTablePosition: null,
+    };
+  }
+  return draft;
+}
+
+function calculateForecast(draft) {
+  return forecastServices({
+    startDate: draft.quoteDate,
+    lastCompletedService: draft.lastCompletedService,
+    currentOdometer: draft.currentOdometer,
+    annualKm: draft.annualKm,
+    intervalMonths: draft.intervalMonths,
+    intervalKm: draft.intervalKm,
+    numberOfServices: draft.numberOfServices,
+  });
 }
 
 function Field({ label, hint, children, wide = false }) {
@@ -29,17 +54,19 @@ function Field({ label, hint, children, wide = false }) {
 }
 
 export default function PlanForm({ initialDraft, editing, onCancel, onSave }) {
-  const [draft, setDraft] = useState(() => initialDraft ? JSON.parse(JSON.stringify(initialDraft)) : newDraft());
+  const [draft, setDraft] = useState(() => initialDraft ? normaliseDraft(initialDraft) : newDraft());
   const [step, setStep] = useState(0);
   const [error, setError] = useState("");
-  const forecast = useMemo(() => {
-    try { return forecastServices({ startDate: draft.quoteDate, currentOdometer: draft.currentOdometer, annualKm: draft.annualKm, intervalMonths: draft.intervalMonths, intervalKm: draft.intervalKm, numberOfServices: draft.numberOfServices }); }
-    catch { return null; }
-  }, [draft.quoteDate, draft.currentOdometer, draft.annualKm, draft.intervalMonths, draft.intervalKm, draft.numberOfServices]);
+  const forecastResult = useMemo(() => {
+    try { return { points: calculateForecast(draft), error: "" }; }
+    catch (cause) { return { points: null, error: cause.message }; }
+  }, [draft.quoteDate, draft.lastCompletedService, draft.currentOdometer, draft.annualKm, draft.intervalMonths, draft.intervalKm, draft.numberOfServices]);
+  const forecast = forecastResult.points;
   const quote = useMemo(() => { try { return buildQuote(draft); } catch { return null; } }, [draft]);
 
   function changeCustomer(key, value) { setDraft((old) => ({ ...old, customer: { ...old.customer, [key]: value } })); setError(""); }
   function changeVehicle(key, value) { setDraft((old) => ({ ...old, vehicle: { ...old.vehicle, [key]: value } })); setError(""); }
+  function changeLastCompletedService(key, value) { setDraft((old) => ({ ...old, lastCompletedService: { ...old.lastCompletedService, [key]: value } })); setError(""); }
   function changeRoot(key, value) {
     setDraft((old) => {
       if (key !== "numberOfServices") return { ...old, [key]: value };
@@ -66,7 +93,7 @@ export default function PlanForm({ initialDraft, editing, onCancel, onSave }) {
       const year = Number(draft.vehicle.year);
       if (!Number.isInteger(year) || year < 1900 || year > new Date().getFullYear() + 2) throw new Error("Enter a valid vehicle year.");
     }
-    if (step === 2 && !forecast) throw new Error("Enter a valid odometer, annual kilometres, interval and service count.");
+    if (step === 2 && !forecast) throw new Error(forecastResult.error || "Complete the usage and service interval details.");
     if (step === 3) {
       if (!forecast || draft.services.length !== forecast.length) throw new Error("Complete usage and interval details first.");
       draft.services.forEach((item, index) => {
@@ -90,7 +117,7 @@ export default function PlanForm({ initialDraft, editing, onCancel, onSave }) {
       <form className="panel formPanel" onSubmit={submit} noValidate>
         {step === 0 && <><div className="formIntro"><span className="eyebrow">01 / CUSTOMER</span><h2>Customer details</h2><p className="sub">These details identify the quote holder. All fields are required.</p></div><div className="fieldGrid"><Field label="First name"><input value={draft.customer.firstName} onChange={(event) => changeCustomer("firstName", event.target.value)} autoComplete="given-name" /></Field><Field label="Last name"><input value={draft.customer.lastName} onChange={(event) => changeCustomer("lastName", event.target.value)} autoComplete="family-name" /></Field><Field label="Mobile"><input type="tel" value={draft.customer.mobile} onChange={(event) => changeCustomer("mobile", event.target.value)} autoComplete="tel" /></Field><Field label="Email"><input type="email" value={draft.customer.email} onChange={(event) => changeCustomer("email", event.target.value)} autoComplete="email" /></Field><Field label="Physical address" wide><input value={draft.customer.address} onChange={(event) => changeCustomer("address", event.target.value)} autoComplete="street-address" /></Field></div></>}
         {step === 1 && <><div className="formIntro"><span className="eyebrow">02 / VEHICLE</span><h2>Vehicle details</h2><p className="sub">VIN is optional when unavailable. Vehicle lookup is not connected in this sandbox.</p></div><div className="fieldGrid"><Field label="Year"><input type="number" min="1900" max="2100" value={draft.vehicle.year} onChange={(event) => changeVehicle("year", event.target.value)} /></Field><Field label="Make"><input value={draft.vehicle.make} onChange={(event) => changeVehicle("make", event.target.value)} /></Field><Field label="Model"><input value={draft.vehicle.model} onChange={(event) => changeVehicle("model", event.target.value)} /></Field><Field label="Registration" hint="Optional"><input value={draft.vehicle.registration} onChange={(event) => changeVehicle("registration", event.target.value)} /></Field><Field label="VIN" hint="Optional if unavailable" wide><input value={draft.vehicle.vin} onChange={(event) => changeVehicle("vin", event.target.value)} /></Field></div></>}
-        {step === 2 && <><div className="formIntro"><span className="eyebrow">03 / FORECAST</span><h2>Usage and service interval</h2><p className="sub">Each service is due at the earlier of its month or kilometre threshold, measured from {displayDate(draft.quoteDate)}.</p></div><div className="fieldGrid"><Field label="Current odometer · km"><input type="number" min="0" step="1" value={draft.currentOdometer} onChange={(event) => changeRoot("currentOdometer", event.target.value)} /></Field><Field label="Predicted annual km"><input type="number" min="1" step="1" value={draft.annualKm} onChange={(event) => changeRoot("annualKm", event.target.value)} /></Field><Field label="Service interval · months"><input type="number" min="1" step="1" value={draft.intervalMonths} onChange={(event) => changeRoot("intervalMonths", event.target.value)} /></Field><Field label="Service interval · km"><input type="number" min="1" step="1" value={draft.intervalKm} onChange={(event) => changeRoot("intervalKm", event.target.value)} /></Field><Field label="Number of services" hint="The plan length is the number of services."><input type="number" min="1" max="24" step="1" value={draft.numberOfServices} onChange={(event) => changeRoot("numberOfServices", event.target.value)} /></Field></div>{forecast && <div className="forecastStrip"><strong>Forecast preview</strong><span>First service {displayDate(forecast[0].predictedDate)} at {numberFormat.format(forecast[0].predictedKm)} km</span><span>Final service {displayDate(forecast.at(-1).predictedDate)} at {numberFormat.format(forecast.at(-1).predictedKm)} km</span></div>}</>}
+        {step === 2 && <><div className="formIntro"><span className="eyebrow">03 / FORECAST</span><h2>Usage and service interval</h2><p className="sub">The last completed service anchors the manufacturer cycle. Current usage predicts when each fixed kilometre threshold will be reached.</p></div><section className="formSection"><div className="formSectionHeading"><div><h3>Last service completed</h3><p className="sub">This establishes the date and kilometre position for the next scheduled service.</p></div></div><div className="fieldGrid"><Field label="Last service date"><input type="date" max={draft.quoteDate} value={draft.lastCompletedService.date} onChange={(event) => changeLastCompletedService("date", event.target.value)} /></Field><Field label="Last service odometer · km"><input type="number" min="0" step="1" value={draft.lastCompletedService.odometer} onChange={(event) => changeLastCompletedService("odometer", event.target.value)} /></Field></div></section><section className="formSection"><div className="formSectionHeading"><div><h3>Current usage and interval</h3><p className="sub">Each service is due at the earlier of its time or kilometre threshold.</p></div></div><div className="fieldGrid"><Field label="Current odometer · km"><input type="number" min="0" step="1" value={draft.currentOdometer} onChange={(event) => changeRoot("currentOdometer", event.target.value)} /></Field><Field label="Predicted annual km"><input type="number" min="1" step="1" value={draft.annualKm} onChange={(event) => changeRoot("annualKm", event.target.value)} /></Field><Field label="Service interval · months"><input type="number" min="1" step="1" value={draft.intervalMonths} onChange={(event) => changeRoot("intervalMonths", event.target.value)} /></Field><Field label="Service interval · km"><input type="number" min="1" step="1" value={draft.intervalKm} onChange={(event) => changeRoot("intervalKm", event.target.value)} /></Field><Field label="Number of services" hint="The plan length is the number of services."><input type="number" min="1" max="24" step="1" value={draft.numberOfServices} onChange={(event) => changeRoot("numberOfServices", event.target.value)} /></Field></div></section>{forecast && <section className="forecastPreview" aria-label="Forecast preview"><div className="forecastPreviewHeading"><div><strong>Forecast preview</strong><span>{forecast.length} proposed {forecast.length === 1 ? "service" : "services"}</span></div><small>Anchored to {numberFormat.format(Number(draft.lastCompletedService.odometer))} km on {displayDate(draft.lastCompletedService.date)}</small></div><div className="forecastList">{forecast.map((point) => <article className="forecastRow" key={point.number}><span className="serviceNumber">{String(point.number).padStart(2, "0")}</span><div><strong>Service {point.number}</strong><small>{numberFormat.format(point.scheduledKm)} km scheduled</small></div><div><span>{point.dueState === "upcoming" ? "Predicted" : "Due"} {displayDate(point.predictedDate)}</span><small>{point.trigger === "km" ? "Kilometre threshold" : "Time threshold"}</small></div><span className={`forecastState ${point.dueState}`}>{point.dueState === "due_now" ? "Due now" : point.dueState === "overdue" ? "Overdue" : "Upcoming"}</span></article>)}</div></section>}</>}
         {step === 3 && <><div className="formIntro"><span className="eyebrow">04 / SERVICES</span><h2>Select and price services</h2><p className="sub">Create each service manually. Prices are fixed in the quote snapshot. Service-table suggestions can be added through the proposal source later.</p></div><div className="serviceEditor">{(forecast ?? []).map((point, index) => <section className="serviceCard" key={index}><div className="serviceCardTop"><div><span className="serviceNumber">{String(index + 1).padStart(2, "0")}</span><strong>Service {index + 1}</strong></div><span className="dueBadge">{displayDate(point.predictedDate)} · {numberFormat.format(point.predictedKm)} km</span></div><div className="fieldGrid"><Field label="Service name" wide><input value={draft.services[index]?.name ?? ""} onChange={(event) => changeService(index, "name", event.target.value)} /></Field><Field label="Description" wide><input value={draft.services[index]?.description ?? ""} onChange={(event) => changeService(index, "description", event.target.value)} placeholder="Included work" /></Field><Field label="Price · NZD"><input type="number" min="0.01" step="0.01" value={draft.services[index]?.price ?? ""} onChange={(event) => changeService(index, "price", event.target.value)} /></Field><Field label="GST treatment"><select value={draft.services[index]?.taxMode ?? "inclusive"} onChange={(event) => changeService(index, "taxMode", event.target.value)}><option value="inclusive">GST inclusive</option><option value="exclusive">GST exclusive</option></select></Field></div>{draft.services[index]?.price && <small className="grossHint">Contract price including GST: {(() => { try { return formatMoney(serviceGrossCents(draft.services[index].price, draft.services[index].taxMode)); } catch { return "—"; } })()}</small>}</section>)}</div></>}
         {step === 4 && <><div className="formIntro"><span className="eyebrow">05 / FUNDING</span><h2>Payment settings</h2><p className="sub">Choose the collection frequency and first date. The engine checks every service’s required funding and ends collections before the last service.</p></div><div className="fieldGrid"><Field label="Payment frequency"><select value={draft.frequency} onChange={(event) => changeRoot("frequency", event.target.value)}>{Object.entries(PAYMENT_FREQUENCIES).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></Field><Field label="First payment date"><input type="date" min={draft.quoteDate} value={draft.firstPaymentDate} onChange={(event) => changeRoot("firstPaymentDate", event.target.value)} /></Field></div>{quote ? <div className="fundingPreview"><div><span>Regular payment</span><strong>{formatMoney(quote.funding.installmentCents)}</strong><small>{quote.funding.paymentCount} collections · final payment {formatMoney(quote.funding.finalPaymentCents)}</small></div><div><span>Final collection</span><strong>{displayDate(quote.funding.finalPaymentDate)}</strong><small>Final service {displayDate(quote.services.at(-1).predictedDate)}</small></div></div> : <p className="helpBox">Complete the payment settings to calculate a funding schedule.</p>}</>}
         {step === 5 && <><div className="formIntro"><span className="eyebrow">06 / REVIEW</span><h2>Quote summary</h2><p className="sub">Review service values, due points and collection coverage before saving this local quote.</p></div>{quote ? <QuoteSummary quote={quote} origin="dealer" showSchedule /> : <p className="helpBox">Return to the earlier steps to complete the quote.</p>}</>}
