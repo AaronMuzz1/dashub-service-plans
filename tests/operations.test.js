@@ -20,7 +20,7 @@ function quotePlan(id = "plan", branchId = "branch") {
 const terms = { setupFeeCents: 4900, ongoingFeeCents: 1500, providerFeeCents: 125, providerFeeTreatment: "dealer" };
 const activate = (plan) => activateQuote(plan, { subscriptionActive: true, commercialTerms: terms }, ctx("2026-01-02"));
 
-test("activation requires subscription and snapshots contract and setup fee", () => {
+test("activation requires subscription, snapshots terms, and defers setup fee to first collection", () => {
   const quote = quotePlan();
   assert.throws(() => activateQuote(quote, { subscriptionActive: false, commercialTerms: terms }, ctx()), /subscription/);
   const active = activate(quote);
@@ -28,7 +28,13 @@ test("activation requires subscription and snapshots contract and setup fee", ()
   assert.equal(active.contract.totalCents, 140000);
   assert.equal(active.contract.commercialTerms.setupFeeCents, 4900);
   assert.equal(active.revisions.length, 1);
-  assert.equal(active.ledger[0].type, "setup_fee");
+  assert.equal(active.operationalStatus, "awaiting_first_payment");
+  assert.equal(active.ledger.length, 0);
+  assert.equal(active.paymentSchedule[0].setupFeeCents, 4900);
+  assert.equal(active.paymentSchedule[0].chargeCents, active.paymentSchedule[0].amountCents + 4900);
+  const live = simulateScheduledPayment(active, "PAY-1", "success", ctx());
+  assert.equal(live.operationalStatus, "live");
+  assert.equal(live.ledger.find((entry) => entry.type === "setup_fee").amountCents, 4900);
   quote.draft.services[0].price = "999.00";
   assert.equal(active.contract.services[0].grossCents, 50000);
 });
@@ -83,7 +89,7 @@ test("invoice tolerance is inclusive at five cents, one invoice per PO, exceptio
   assert.equal(exception.claims[0].invoice.resolution.reason, "Approved variance in sandbox");
 });
 
-test("weekly consolidated payouts group branches and calculate gross, fees, net", () => {
+test("weekly consolidated payouts preserve gross dealer entitlements while commercial fees are parked", () => {
   const makeMatched = (id, branch) => {
     let plan = activate(quotePlan(id, branch));
     plan = claimNextService(plan, { serviceNumber: 1, completed: true, roNumber: `RO-${id}`, serviceDate: "2026-07-01", currentOdometer: 47000, dealerCollectedShortfallCents: 50000 }, ctx("2026-07-01"));
@@ -95,8 +101,8 @@ test("weekly consolidated payouts group branches and calculate gross, fees, net"
   const central = result.created.find((payout) => payout.branchId === "central");
   assert.equal(central.lines.length, 2);
   assert.equal(central.grossCents, 100000);
-  assert.equal(central.feesCents, 3250);
-  assert.equal(central.netCents, 96750);
+  assert.equal(central.feesCents, 0);
+  assert.equal(central.netCents, 100000);
   assert.equal(central.weekEnding, "2026-07-03");
   assert.equal(result.plans[0].claims[0].financialStatus, "scheduled_for_payout");
   const paid = markWeeklyPayoutPaid(result.plans, result.payouts, central.id, ctx("2026-07-03"));

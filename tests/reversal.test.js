@@ -152,16 +152,16 @@ test("a dealer adjustment only offsets available net and carries its remainder f
   const claim = paid.claims[0];
   const reversed = reverseServiceClaim(paid, workspace.payouts, [], claim.id, "Correct paid service", { at: "2026-09-22T10:00:00Z", actorId: "dashub-admin" });
   let early = structuredClone(workspace.plans.find((item) => item.id === "early-service"));
-  early.contract.commercialTerms.ongoingFeeCents = 35000; // A valid but high fee leaves only $110 net to offset.
+  early.contract.commercialTerms.ongoingFeeCents = 35000; // Parked configuration must not reduce the service entitlement.
   early = receiveDealerInvoice(early, early.claims[0].id, { invoiceNumber: "INV-PARTIAL-204", amountCents: 46000 }, { at: "2026-09-22T10:10:00Z" });
   const scheduled = scheduleWeeklyPayouts([early], reversed.payouts, { at: "2026-09-22T11:00:00Z" }, reversed.adjustments);
   const batch = scheduled.created[0];
-  assert.equal(batch.adjustmentCents, -11000);
-  assert.equal(batch.netCents, 0);
-  assert.equal(scheduled.adjustments[0].offsets[0].amountCents, 11000);
+  assert.equal(batch.adjustmentCents, -38000);
+  assert.equal(batch.netCents, 8000);
+  assert.equal(scheduled.adjustments[0].offsets[0].amountCents, 38000);
   const paidNext = markWeeklyPayoutPaid(scheduled.plans, scheduled.payouts, batch.id, { at: "2026-09-25T10:00:00Z" }, scheduled.adjustments);
   assert.equal(paidNext.adjustments[0].offsets[0].status, "paid");
-  assert.equal(-paidNext.adjustments[0].amountCents - paidNext.adjustments[0].offsets[0].amountCents, 26000);
+  assert.equal(-paidNext.adjustments[0].amountCents - paidNext.adjustments[0].offsets[0].amountCents, 0);
 });
 
 test("advisor denial and manager tenant boundary are enforced in application layer", () => {

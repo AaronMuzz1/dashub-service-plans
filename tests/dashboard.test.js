@@ -21,6 +21,7 @@ test("advisor dashboard prioritises plan creation and claims without Dashub fina
   assert.ok(!metricLabels(dashboard).includes("Customer Collections"));
   assert.ok(!metricLabels(dashboard).includes("Dashub Revenue / Fees"));
   assert.ok(dashboard.attention.some((item) => item.id === "funding-risk"));
+  assert.ok(dashboard.attention.some((item) => item.id === "quote-follow-ups"));
   assert.ok(!dashboard.attention.some((item) => ["awaiting-invoices", "invoice-exceptions"].includes(item.id)));
   assert.ok(dashboard.recentPlans.every((summary) => canViewPlan(actor, workspace.plans.find((plan) => plan.id === summary.id))));
 });
@@ -41,7 +42,7 @@ test("manager dashboard shows dealership commercial and operational information 
 test("Dashub Admin dashboard exposes platform financial and operational exceptions", () => {
   const { dashboard } = dashboardFor("dashub-admin");
   assert.equal(dashboard.role, "dashub_admin");
-  for (const label of ["Active Plans", "New Plans", "New Plan Value", "Customer Collections", "Claims Payable", "Next Weekly Dealer Payout", "Dashub Revenue / Fees", "Failed Collections", "Invoice Exceptions", "Plans At Risk of Expiry"]) {
+  for (const label of ["Active Plans", "New Plans", "New Plan Value", "Customer Collections", "Claims Payable", "Next Weekly Dealer Payout", "Customer Setup / Cancellation Fees", "Failed Collections", "Invoice Exceptions", "Plans At Risk of Expiry"]) {
     assert.ok(metricLabels(dashboard).includes(label), `missing admin metric: ${label}`);
   }
   assert.ok(dashboard.attention.some((item) => item.id === "invoice-exceptions"));
